@@ -92,6 +92,9 @@ function INPUT.set_text(input, text)
 end
 
 
+
+
+
 function M.input(node_id, keyboard_type, action_id, action, config, refresh_fn)
 	node_id = core.to_hash(node_id)
 	local node = gui.get_node(node_id)
@@ -105,6 +108,7 @@ function M.input(node_id, keyboard_type, action_id, action, config, refresh_fn)
 	input.text = input.text or ""
 	input.marked_text = input.marked_text or ""
 	input.keyboard_type = keyboard_type
+	input.cursor_position = input.cursor_position or 1
 	
 	if not action then
 		input.empty = #input.text == 0 and #input.marked_text == 0
@@ -115,6 +119,20 @@ function M.input(node_id, keyboard_type, action_id, action, config, refresh_fn)
 	core.clickable(input, action_id, action)
 
 	if input.enabled then
+		if input.released_now then
+			local pos = action.screen_x - (gui.get_screen_position(node).x - 100)
+			print("POS", action.screen_x, gui.get_screen_position(node), pos, core.get_root_position(node).x)
+			local width = 0
+			input.cursor_position = #input.text
+			for i=1,#input.text do
+				width = width + core.text_metrics(input.text:sub(i,i), node).width
+				print(width)
+				if pos < width then
+					input.cursor_position = i
+					break
+				end
+			end
+		end
 		input.deselected_now = false
 		if input.released_now then
 			input.selected = true
@@ -141,7 +159,10 @@ function M.input(node_id, keyboard_type, action_id, action, config, refresh_fn)
 				-- ignore arrow keys
 				if not string.match(hex, "EF9C8[0-3]") then
 					if not config or not config.allowed_characters or action.text:match(config.allowed_characters) then
-						input.text = input.text .. action.text
+						local before = input.text:sub(1,input.cursor_position)
+						local after = input.text:sub(input.cursor_position + 1)
+						input.text = before .. action.text .. after
+						input.cursor_position = input.cursor_position + #action.text
 						if config and config.max_length then
 							input.text = input.text:sub(1, config.max_length)
 						end

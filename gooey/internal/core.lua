@@ -29,6 +29,16 @@ local function handle_action(component, action_id, action)
 	end
 end
 
+function M.text_metrics(text, node)
+	local font = gui.get_font(node)
+	local width = gui.get_size(node).x
+	local line_break = gui.get_line_break(node)
+	local leading = gui.get_leading(node)
+	local tracking = gui.get_tracking(node)
+	local metrics = gui.get_text_metrics(font, text, width, line_break, leading, tracking)
+	return metrics
+end
+
 function M.get_root_position(node)
 	local get_pos
 	get_pos = function(node)
