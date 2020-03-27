@@ -169,21 +169,21 @@ The state table contains the following fields:
 	end
 
 	function on_input(self, action_id, action)
-		gooey.checkbox("checkbox/bg", action_id, action, on_checked, update_checkbox)
+		gooey.checkbox("checkbox/box", action_id, action, on_checked, update_checkbox)
 	end
 
 **STATE**
 
 It is possible to set the state of a checkbox. This is good for setting the initial state of the checkbox:
 
-	update_checkbox(gooey.checkbox("checkbox/bg").set_checked(true))
-    update_checkbox(gooey.checkbox("checkbox/bg").set_visible(false))
+	update_checkbox(gooey.checkbox("checkbox/box").set_checked(true))
+    update_checkbox(gooey.checkbox("checkbox/box").set_visible(false))
 
 **CONFIG**
 
 It is possible to configure the minimum time required to detect a long-press:
 
-    gooey.checkbox("checkbox/bg").set_long_pressed_time(time)
+    gooey.checkbox("checkbox/box").set_long_pressed_time(time)
 
 
 ### gooey.radio(node_id, group, action_id, action, fn, refresh_fn)
